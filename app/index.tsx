@@ -1,62 +1,158 @@
 import { Canvas } from "@react-three/fiber/native";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import MathParticles3D from "../components/MathParticles3D";
+import { useRef } from "react";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Scene3D from "../components/Scene3D";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
+
+// Danh sách các trạm để render Menu
+const NAV_ITEMS = [
+  "HOOK",
+  "CORE",
+  "LAB",
+  "ACHIEVEMENTS",
+  "CANVAS",
+  "LOGS",
+  "NEXUS",
+];
 
 export default function Home() {
+  const scrollOffset = useRef(0);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Hàm nhảy đến trang cụ thể khi nhấn vào Menu
+  const scrollToPage = (index: number) => {
+    scrollViewRef.current?.scrollTo({ y: index * height, animated: true });
+  };
+
   return (
     <View style={styles.container}>
-      {/* LỚP 0: BACKGROUND 3D TOÁN HỌC */}
       <View style={styles.canvasContainer}>
-        <Canvas style={{ flex: 1 }} camera={{ position: [0, 0, 8], fov: 75 }}>
-          {/* Màu nền đen tuyền (Deep Black) để làm nổi bật các hạt */}
+        <Canvas camera={{ position: [0, 0, 15], fov: 75 }}>
           <color attach="background" args={["#0a0a0a"]} />
-          <ambientLight intensity={0.5} />
-          <MathParticles3D />
+          <Scene3D scrollOffset={scrollOffset} />
         </Canvas>
       </View>
 
-      {/* LỚP 1: FOREGROUND 2D BRUTALISM */}
-      <View style={styles.overlay} pointerEvents="box-none">
-        {/* Header Tối Giản */}
-        <View style={styles.header}>
-          <Text style={styles.logo}> VŨ TRÍ DŨNG</Text>
-          <Text style={styles.navItem}>MENU ☰</Text>
-        </View>
-
-        {/* Cụm Text Giữa Màn Hình */}
-        <View style={styles.heroContent} pointerEvents="none">
-          {/* Nhắc nhớ lại những cái tên thân thuộc bằng phong cách gồ ghề */}
-          <View style={styles.tagsContainer}>
-            <Text style={styles.tag}>DAVID MILLER</Text>
-            <Text style={styles.tag}>AKINA AOI</Text>
-          </View>
-
-          <Text style={styles.mainTitle}>CREATIVE</Text>
-          <Text style={styles.mainTitle}>EXPLORER.</Text>
-
-          <Text style={styles.description}>
-            A digital space beyond the confines of ordinary logic. Not just an
-            IT portfolio, but a freeform canvas for thoughts, stories, and
-            mathematical poetry.
-          </Text>
-        </View>
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>SCROLL TO DISCOVER ↓</Text>
+      {/* THANH MENU ĐIỀU HƯỚNG CỐ ĐỊNH Ở TRÊN CÙNG */}
+      <View style={styles.fixedHeader}>
+        <Text style={styles.logo}>VŨ TRÍ DŨNG</Text>
+        <View style={styles.navMenu}>
+          {NAV_ITEMS.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => scrollToPage(index)}
+              style={styles.navButton}
+            >
+              <Text style={styles.navItemText}>
+                0{index + 1}. {item}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
+
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.scrollOverlay}
+        pagingEnabled={true}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          scrollOffset.current = e.nativeEvent.contentOffset.y / height;
+        }}
+      >
+        {/* 1. THE HOOK */}
+        <View style={styles.page}>
+          <View style={styles.contentCenter}>
+            <Text style={styles.mainTitle}>CREATIVE</Text>
+            <Text style={styles.mainTitle}>EXPLORER.</Text>
+            <Text style={styles.description}>
+              A digital space beyond the confines of ordinary logic.
+            </Text>
+          </View>
+        </View>
+
+        {/* 2. THE CORE */}
+        <View style={styles.page}>
+          <View style={styles.contentCenter}>
+            <Text style={styles.subTitle}>02. THE CORE</Text>
+            <Text style={styles.mainTitle}>MOBILE DEV.</Text>
+            <Text style={styles.description}>
+              Crafting experiences through Kotlin and Flutter.
+            </Text>
+          </View>
+        </View>
+
+        {/* 3. THE LAB */}
+        <View style={styles.page}>
+          <View style={styles.contentCenter}>
+            <Text style={styles.subTitle}>03. THE LAB</Text>
+            <Text style={styles.mainTitle}>EXPERIMENTS.</Text>
+            <Text style={styles.description}>
+              Architecting robust systems and testing the boundaries of logic.
+            </Text>
+          </View>
+        </View>
+
+        {/* 4. THE ACHIEVEMENTS */}
+        <View style={styles.page}>
+          <View style={styles.contentCenter}>
+            <Text style={styles.subTitle}>04. ACHIEVEMENTS</Text>
+            <Text style={styles.mainTitle}>MILESTONES.</Text>
+            <Text style={styles.description}>
+              Certifications, academic records, and professional growth markers.
+            </Text>
+          </View>
+        </View>
+
+        {/* 5. THE CANVAS */}
+        <View style={styles.page}>
+          <View style={styles.contentCenter}>
+            <Text style={styles.subTitle}>05. THE CANVAS</Text>
+            <Text style={styles.mainTitle}>GALLERY.</Text>
+            <Text style={styles.description}>
+              A freeform collection of thoughts, photography, and visual
+              fragments.
+            </Text>
+          </View>
+        </View>
+
+        {/* 6. THE LOGS */}
+        <View style={styles.page}>
+          <View style={styles.contentCenter}>
+            <Text style={styles.subTitle}>06. THE LOGS</Text>
+            <Text style={styles.mainTitle}>TRANSMISSIONS.</Text>
+            <Text style={styles.description}>
+              Written records, tutorials, and reflections.
+            </Text>
+          </View>
+        </View>
+
+        {/* 7. THE NEXUS */}
+        <View style={styles.page}>
+          <View style={styles.contentCenter}>
+            <Text style={styles.subTitle}>07. THE NEXUS</Text>
+            <Text style={styles.mainTitle}>CONNECT.</Text>
+            <Text style={styles.description}>
+              Establish a link. Drop a message.
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0a0a0a",
-  },
+  container: { flex: 1, backgroundColor: "#0a0a0a" },
   canvasContainer: {
     position: "absolute",
     top: 0,
@@ -65,69 +161,49 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 0,
   },
-  overlay: {
-    flex: 1,
-    zIndex: 1,
-    justifyContent: "space-between",
-    padding: 24,
-  },
-  header: {
+  scrollOverlay: { flex: 1, zIndex: 1 },
+  page: { height: height, paddingHorizontal: 60, justifyContent: "center" },
+
+  // Header được làm nổi bật và luôn nằm trên cùng (z-index cao nhất)
+  fixedHeader: {
+    position: "absolute",
+    top: 30,
+    left: 60,
+    right: 60,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 40,
+    zIndex: 10,
   },
-  logo: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    letterSpacing: 2,
+  logo: { color: "#fff", fontSize: 16, fontWeight: "bold", letterSpacing: 2 },
+  navMenu: { flexDirection: "row", gap: 20 },
+  navButton: { paddingVertical: 5 },
+  navItemText: {
+    color: "#bbb",
+    fontSize: 12,
+    letterSpacing: 1.5,
+    fontWeight: "600",
   },
-  navItem: {
-    color: "#fff",
-    fontSize: 14,
-    letterSpacing: 1,
-  },
-  heroContent: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  tagsContainer: {
-    flexDirection: "row",
-    gap: 10,
-    marginBottom: 20,
-  },
-  tag: {
-    color: "#0a0a0a",
-    backgroundColor: "#fff",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 1,
-  },
+
+  contentCenter: { flex: 1, justifyContent: "center", maxWidth: 800 },
   mainTitle: {
     color: "#fff",
-    fontSize: width > 600 ? 80 : 50,
+    fontSize: width > 800 ? 80 : 50,
     fontWeight: "900",
     letterSpacing: -2,
-    lineHeight: width > 600 ? 85 : 55,
+  },
+  subTitle: {
+    color: "#c084fc",
+    fontSize: 18,
+    fontWeight: "bold",
+    letterSpacing: 3,
+    marginBottom: 10,
   },
   description: {
-    color: "#888",
+    color: "#ddd",
     fontSize: 16,
     marginTop: 24,
     maxWidth: 450,
     lineHeight: 24,
-  },
-  footer: {
-    alignItems: "flex-start",
-    marginBottom: 20,
-  },
-  footerText: {
-    color: "#444",
-    fontSize: 12,
-    letterSpacing: 2,
-    fontWeight: "bold",
   },
 });
