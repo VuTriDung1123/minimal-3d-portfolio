@@ -1,13 +1,41 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// ==========================================
+// 1. BẢNG POST (Dùng cho Blog, Dự án, Chứng chỉ, Sự kiện...)
+// ==========================================
+model Post {
+  id      String @id @default(uuid())
+  titleVi String
+  titleEn String
+  titleJp String
+
+  contentVi String // Hỗ trợ lưu Markdown
+  contentEn String
+  contentJp String
+
+  tag    String // Phân loại: 'uni_projects', 'my_confessions', 'tech_certs'...
+  images String // Lưu mảng link ảnh từ Cloudinary dưới dạng JSON string
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 2. BẢNG PAGE SECTION (Dùng cho các nội dung động trên trang web)
+// ==========================================
+model PageSection {
+  id         String @id @default(uuid())
+  sectionKey String @unique // Khóa định danh: 'hero', 'about', 'skills', 'global_config', 'ai_config'...
+
+  contentVi String // Chứa Text thông thường hoặc JSON String cho cấu trúc phức tạp
+  contentEn String
+  contentJp String
+
+  updatedAt DateTime @updatedAt
 }
